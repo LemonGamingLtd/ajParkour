@@ -332,7 +332,7 @@ public class BlockSelector implements Listener {
 	private final ConcurrentHashMap<Player, String> blockCache = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<Player, Long> blockFetch = new ConcurrentHashMap<>();
 	public String getBlock(Player p, PkArea area) {
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+		plugin.scheduler.runTaskAsynchronously(() -> {
 			for(Player player : blockCache.keySet()) {
 				if(player.isOnline()) continue;
 				blockCache.remove(player);
@@ -404,9 +404,9 @@ public class BlockSelector implements Listener {
 	}
 
 	private void cacheBlock(Player p) {
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+		plugin.scheduler.runTaskAsynchronously(() -> {
 			final String raw = scores.getMaterial(p.getUniqueId());
-			Bukkit.getScheduler().runTask(plugin, () -> {
+			plugin.scheduler.runTaskAtEntity(p, () -> {
 				blockCache.put(p, raw);
 				blockFetch.put(p, System.currentTimeMillis());
 			});

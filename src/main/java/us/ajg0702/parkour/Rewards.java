@@ -109,7 +109,7 @@ public class Rewards implements Listener {
 		final Player player = p.getPlayer();
 		
 		if(!p.beatServerHighscore) {
-			Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+			plugin.scheduler.runTaskAsynchronously(() -> {
 				int topscore;
 				try {
 					int number = 1;
@@ -123,8 +123,8 @@ public class Rewards implements Listener {
 					}
 					List<String> cmds = rw.getStringList("specials.beat-server-record.commands"	);
 					cmds.replaceAll(s -> s.replaceAll("\\{SCORE}", score+""));
-					if(cmds.size() != 0) {
-						Bukkit.getScheduler().runTask(plugin, () -> executeCommands(cmds, p));
+					if(!cmds.isEmpty()) {
+						plugin.scheduler.runTask(() -> executeCommands(cmds, p));
 					}
 					p.beatServerHighscore = true;
 				}

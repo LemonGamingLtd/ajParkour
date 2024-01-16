@@ -1,6 +1,7 @@
 package us.ajg0702.parkour.game;
 
 import fr.mrmicky.infinitejump.InfiniteJump;
+import me.nahu.scheduler.wrapper.task.WrappedTask;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,14 +58,14 @@ public class PkPlayer implements Listener {
 	int prevhigh = 0;
 	
 	int afkkick;
-	int afktask;
+	WrappedTask afktask;
 	
 	int ahead; // how many (extra) blocks to make ahead
 	
-	int clearPotsTaskID;
+	WrappedTask clearPotsTask;
 	
 	boolean fasterAfkCheck;
-	int fastAfkCheckID;
+	WrappedTask fastAfkCheck;
 	
 	public boolean beatServerHighscore = false;
 	
@@ -105,7 +106,7 @@ public class PkPlayer implements Listener {
 		
 		fasterAfkCheck = config.getBoolean("faster-afk-detection");
 		
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+		plugin.scheduler.runTaskAsynchronously(() -> {
 			prevhigh = scores.getHighScore(ply.getUniqueId(), config.getBoolean("begin-score-per-area") ? area.getName() : null);
 			if(prevhigh > 0 && !(prevhigh+"").equalsIgnoreCase("-1")) {
 				p.sendMessage(msgs.get("start.score", p).replaceAll("\\{SCORE}", ""+prevhigh));
@@ -113,9 +114,9 @@ public class PkPlayer implements Listener {
 				p.sendMessage(msgs.get("start.first", p).replaceAll("\\{SCORE}", ""+prevhigh));
 			}
 		});
-		
-		
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> plugin.scores.addToGamesPlayed(p.getUniqueId()));
+
+
+		plugin.scheduler.runTaskAsynchronously(() -> plugin.scores.addToGamesPlayed(p.getUniqueId()));
 		
 		
 		if(!fasterAfkCheck) {
@@ -123,7 +124,7 @@ public class PkPlayer implements Listener {
 				Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 			}
 		} else if(afkkick > 0) {
-			fastAfkCheckID = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> onMove(new PlayerMoveEvent(ply, p.getLocation(), p.getLocation())), 5, 5).getTaskId();
+			fastAfkCheck = plugin.scheduler.runTaskTimerAsynchronously(() -> onMove(new PlayerMoveEvent(ply, p.getLocation(), p.getLocation())), 5, 5);
 		}
 		
 		infiniteJump = Bukkit.getPluginManager().getPlugin("InfiniteJump") != null;
@@ -152,7 +153,7 @@ public class PkPlayer implements Listener {
 		Location tp = jumps.get(0).getTo();
 		teleporting = true;
 		p.teleport(new Location(tp.getWorld(), tp.getX()+0.5, tp.getY()+1.5, tp.getZ()+0.5, p.getLocation().getYaw(), p.getLocation().getPitch()));
-		Bukkit.getScheduler().scheduleSyncDelayedTask(m.main, () -> teleporting = false, 5);
+		plugin.scheduler.runTaskLaterAtEntity(p, () -> teleporting = false, 5);
 		
 		playSound("start-sound", p);
 		
@@ -179,20 +180,20 @@ public class PkPlayer implements Listener {
 		}
 		
 		if(afkkick >= 0) {
-			afktask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+			afktask = plugin.scheduler.runTaskTimerAtEntity(p, () -> {
 				long distance = System.currentTimeMillis() - lastmove;
 				if(distance > (afkkick* 1000L)) {
 					end(msgs.get("fall.force.afk"));
 				}
-			}, afkkick* 20L, 20).getTaskId();
+			}, afkkick* 20L, 20);
 		}
 		
 		clearPots();
-		clearPotsTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+		clearPotsTask = plugin.scheduler.runTaskTimerAtEntity(p, () -> {
 			if(Manager.getInstance().getPlayer(ply) != null) {
 				clearPots();
 			}
-		}, 0, 20);
+		}, 1, 20);
 		
 		
 		
@@ -408,7 +409,7 @@ public class PkPlayer implements Listener {
 			j.remove();
 		}
 		
-		Bukkit.getScheduler().cancelTask(afktask);
+		afktask.cancel();
 		
 		if(!reason.isEmpty()) {
 			ply.sendMessage(msgs.get("fall.force.base")+reason);
@@ -430,7 +431,7 @@ public class PkPlayer implements Listener {
 		if(man.pluginDisabling) {
 			hsTask.run();
 		} else {
-			Bukkit.getScheduler().runTaskAsynchronously(plugin, hsTask);
+			plugin.scheduler.runTaskAsynchronously(hsTask);
 		}
 		
 		
@@ -464,8 +465,8 @@ public class PkPlayer implements Listener {
 			man.checkActive();
 		}
 		
-		Bukkit.getScheduler().cancelTask(clearPotsTaskID);
-		Bukkit.getScheduler().cancelTask(fastAfkCheckID);
+		clearPotsTask.cancel();
+		fastAfkCheck.cancel();
 		
 		playSound("end-sound", ply);
 		

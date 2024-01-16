@@ -130,11 +130,11 @@ public class Metrics {
                 } catch (NoSuchFieldException ignored) { }
             }
             // Register our service
-            Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
-            if (!found) {
-                // We are the first!
-                startSubmitting();
-            }
+//            Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
+//            if (!found) {
+//                // We are the first!
+//                startSubmitting();
+//            }
         }
     }
 

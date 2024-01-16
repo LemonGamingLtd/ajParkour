@@ -460,7 +460,7 @@ public class Commands implements CommandExecutor {
 							editing = new HashMap<>();
 							
 							final Player p = (Player) sender;
-							Bukkit.getScheduler().runTask(pl, () -> {
+							pl.scheduler.runTaskAsynchronously(() -> {
 								pl.man.reloadPositions();
 								p.sendMessage(msgs.get("setup.save.success", p).replaceAll("\\{NAME}", name));
 							});

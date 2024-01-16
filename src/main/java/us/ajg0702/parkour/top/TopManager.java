@@ -53,7 +53,7 @@ public class TopManager {
     }
 
     private void fetchPositionAsync(int position, String area) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> fetchPosition(position, area));
+        plugin.scheduler.runTaskAsynchronously(() -> fetchPosition(position, area));
     }
     private TopEntry fetchPosition(int position, String area) {
         TopEntry te = plugin.scores.getTopPosition(position, area);
@@ -92,8 +92,8 @@ public class TopManager {
     long lastClean = 0;
 
     private void fetchHighScoreAsync(Player player, String area) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> fetchHighScore(player, area));
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.scheduler.runTaskAsynchronously(() -> fetchHighScore(player, area));
+        plugin.scheduler.runTaskAsynchronously(() -> {
             if(System.currentTimeMillis() - lastClean > 300e3) {
                 lastClean = System.currentTimeMillis();
 

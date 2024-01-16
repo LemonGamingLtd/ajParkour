@@ -23,6 +23,7 @@ dependencies {
   compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.0.1")
   compileOnly(files("libs/InfiniteJump.jar"))
 
+  implementation(files("libs/folia-scheduler-wrapper-0.0.2-SNAPSHOT-all.jar"))
   implementation("com.zaxxer:HikariCP:3.4.5")
   implementation("org.slf4j:slf4j-simple:1.6.4")
   implementation("us.ajg0702:ajUtils:1.0.0")
@@ -40,13 +41,14 @@ tasks.withType<ProcessResources> {
 tasks.shadowJar {
     relocate("us.ajg0702.utils", "us.ajg0702.parkour.utils")
     relocate("com.zaxxer.hikari", "us.ajg0702.parkour.hikari")
+    relocate("me.nahu.scheduler", "us.ajg0702.parkour.scheduler")
 
     archiveClassifier.set("")
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 publishing {

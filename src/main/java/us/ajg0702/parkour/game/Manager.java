@@ -45,12 +45,12 @@ public class Manager implements Listener {
 
 		msgs = main.msgs;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(pl, this::reloadPositions, 5);
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(main, this::checkActive, 15*20, 60*20);
-		Bukkit.getScheduler().runTaskTimer(pl, () -> {
+		pl.scheduler.runTaskLater(this::reloadPositions, 5);
+		pl.scheduler.runTaskTimer(this::checkActive, 15*20, 60*20);
+		pl.scheduler.runTaskTimer(() -> {
 			if(main.config.getBoolean("debug")) {
 				for(PkArea a : getAreas()) {
-					a.draw();
+					pl.scheduler.runTaskAtLocation(a.drawLocation(), a::draw);
 				}
 			}
 		}, 10, 20);

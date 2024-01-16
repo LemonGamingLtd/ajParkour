@@ -196,10 +196,12 @@ public class PkArea {
 		int length = highestX - lowestX;
 		int height = highestY - lowestY;
 		
-		new ParticleRect(new Location(pos1.getWorld(), lowestX, lowestY, lowestZ), width, length, height).draw();
+		new ParticleRect(drawLocation(), width, length, height).draw();
 	}
 	
-	
+	public Location drawLocation() {
+		return new Location(pos1.getWorld(), lowestX, lowestY, lowestZ);
+	}
 	
 	private static int random(int min, int max) {
 

@@ -50,9 +50,12 @@ public class AreaStorage implements Listener {
 		}
 		
 		if(mainConfig.getBoolean("enable-portals") && mainConfig.getBoolean("faster-portals")) {
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+			plugin.scheduler.runTaskTimerAsynchronously(() -> {
 				for(Player p : Bukkit.getOnlinePlayers()) {
-					checkPortal(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()));
+					plugin.scheduler.runTaskAtEntity(
+						p,
+						() -> checkPortal(new PlayerMoveEvent(p, p.getLocation(), p.getLocation()))
+					);
 				}
 			}, 3*20, 5);
 		}
@@ -142,7 +145,7 @@ public class AreaStorage implements Listener {
 					Location ploc = new Location(world, x, y, z);
 					save(new Portal(i+"", ploc, null));
 				}
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this::reload, 20);
+				plugin.scheduler.runTaskLaterAsynchronously(this::reload, 20);
 			} else {
 				return new ArrayList<>();
 			}

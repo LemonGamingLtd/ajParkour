@@ -1,5 +1,7 @@
 package us.ajg0702.parkour;
 
+import me.nahu.scheduler.wrapper.WrappedScheduler;
+import me.nahu.scheduler.wrapper.WrappedSchedulerBuilder;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -33,10 +35,14 @@ public class Main extends JavaPlugin {
 	public Placeholders placeholders;
 	
 	Updater updater;
+
+	public WrappedScheduler scheduler;
 	
 	@Override
 	public void onEnable() {
-		
+		scheduler = WrappedSchedulerBuilder.builder().plugin(this).build();
+		getLogger().info("Successfully initialized scheduler of type: " + scheduler.getImplementationType());
+
 		try {
 			Class.forName("net.md_5.bungee.api.ChatColor");
 		} catch(ClassNotFoundException e) {
@@ -98,7 +104,7 @@ public class Main extends JavaPlugin {
 		JumpManager.getInstance(this);
 		
 		
-		Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+		scheduler.runTaskLaterAsynchronously(() -> {
 			areaStorage.getAreas();
 			areaStorage.getPortals();
 		}, 10);
@@ -117,9 +123,9 @@ public class Main extends JavaPlugin {
 		cmds = new Commands(this);
 		
 		
-		new Metrics(this);
+//		new Metrics(this);
 		
-		updater = Updater.getInstance(this);
+//		updater = Updater.getInstance(this);
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', 
 				"&aajParkour &2v"+this.getDescription().getVersion()+" by ajgeiss0702 has been &aenabled!"));

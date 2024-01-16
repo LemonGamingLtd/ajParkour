@@ -455,7 +455,7 @@ public class Scores {
 		if(Manager.getInstance().pluginDisabling) {
 			r.run();
 		} else {
-			Bukkit.getScheduler().runTaskAsynchronously(plugin, r);
+			plugin.scheduler.runTaskAsynchronously(r);
 		}
 	}
 
@@ -511,7 +511,7 @@ public class Scores {
 
 
 	public void updateName(Player player) {
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+		plugin.scheduler.runTaskAsynchronously(() -> {
 			UUID uuid = player.getUniqueId();
 			try {
 				Connection conn = getConnection();

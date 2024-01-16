@@ -6,6 +6,7 @@ website: https://www.spigotmc.org/resources/ajparkour.60909/
 main: us.ajg0702.parkour.Main
 softdepend: [PlaceholderAPI, WorldEdit]
 api-version: 1.13
+folia-supported: true
 
 commands:
   ajParkour:
