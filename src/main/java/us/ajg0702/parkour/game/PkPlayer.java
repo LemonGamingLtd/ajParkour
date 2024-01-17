@@ -152,7 +152,7 @@ public class PkPlayer implements Listener {
 		}
 		Location tp = jumps.get(0).getTo();
 		teleporting = true;
-		p.teleport(new Location(tp.getWorld(), tp.getX()+0.5, tp.getY()+1.5, tp.getZ()+0.5, p.getLocation().getYaw(), p.getLocation().getPitch()));
+		p.teleportAsync(new Location(tp.getWorld(), tp.getX()+0.5, tp.getY()+1.5, tp.getZ()+0.5, p.getLocation().getYaw(), p.getLocation().getPitch()));
 		plugin.scheduler.runTaskLaterAtEntity(p, () -> teleporting = false, 5);
 		
 		playSound("start-sound", p);
@@ -440,7 +440,7 @@ public class PkPlayer implements Listener {
 		
 		if(area.getFallPos() != null) {
 			teleporting = true;
-			ply.teleport(area.getFallPos());
+			ply.teleportAsync(area.getFallPos());
 		}
 		
 		
@@ -474,8 +474,8 @@ public class PkPlayer implements Listener {
 			ij.getJumpManager().enable(ply);
 		}
 		
-		if(cmds.size() > 0) {
-			Rewards.staticExecuteCommands(cmds, getPlayer());
+		if(!cmds.isEmpty()) {
+			plugin.scheduler.runTask(() -> Rewards.staticExecuteCommands(cmds, getPlayer()));
 		}
 		
 		PlayerEndParkourEvent ee = new PlayerEndParkourEvent(ply, score);

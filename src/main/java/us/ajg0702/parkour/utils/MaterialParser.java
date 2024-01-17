@@ -29,9 +29,9 @@ public class MaterialParser {
 			return;
 		}
 		loc.getBlock().setType(mat);
-		if(data >= 0) {
-			loc.getBlock().setData((byte) data);
-		}
+//		if(data >= 0) {
+//			loc.getBlock().setData((byte) data);
+//		}
 	}
 
 }

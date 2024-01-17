@@ -1,6 +1,6 @@
 plugins {
     java
-    id("com.github.johnrengelman.shadow").version("6.1.0")
+    id("com.github.johnrengelman.shadow") version "7.0.0"
     `maven-publish`
 }
 
@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-  compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
+  compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
   compileOnly("me.clip:placeholderapi:2.10.4")
   compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.0.1")
   compileOnly(files("libs/InfiniteJump.jar"))

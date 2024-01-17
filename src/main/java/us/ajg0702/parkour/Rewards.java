@@ -217,7 +217,7 @@ public class Rewards implements Listener {
 
 				List<String> cmds = rw.getStringList("exceptions."+ec+".commands");
 				cmds.replaceAll(s -> s.replaceAll("\\{SCORE}", score+""));
-				executeCommands(cmds, p);
+				plugin.scheduler.runTask(() -> executeCommands(cmds, p));
 				break;
 			}
 		}
@@ -276,7 +276,7 @@ public class Rewards implements Listener {
 
 				List<String> cmds = rw.getStringList("intervals."+ic+".commands");
 				cmds.replaceAll(s -> s.replaceAll("\\{SCORE}", score+""));
-				executeCommands(cmds, p);
+				plugin.scheduler.runTask(() -> executeCommands(cmds, p));
 			}
 		}
 		
@@ -312,7 +312,7 @@ public class Rewards implements Listener {
 			}
 			p.getPlayer().sendMessage(m);
 		}
-		staticExecuteCommands(rw.getStringList("specials.start.commands"), p.getPlayer());
+		plugin.scheduler.runTask(() -> staticExecuteCommands(rw.getStringList("specials.start.commands"), p.getPlayer()));
 	}
 
 	@EventHandler
@@ -327,7 +327,7 @@ public class Rewards implements Listener {
 		}
 		List<String> commands = rw.getStringList("specials.end.commands");
 		commands.replaceAll(s -> s.replaceAll("\\{SCORE}", e.getFallScore()+""));
-		staticExecuteCommands(commands, p);
+		plugin.scheduler.runTask(() -> staticExecuteCommands(commands, p));
 	}
 	
 	public static void staticExecuteCommands(List<String> cmds, Player p) {
